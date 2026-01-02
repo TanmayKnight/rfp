@@ -75,7 +75,10 @@ export default async function SettingsPage() {
                         <CardDescription>Add a new user to your team.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form action={createInviteAction} className="flex gap-4 items-end">
+                        <form action={async (formData) => {
+                            'use server'
+                            await createInviteAction(formData)
+                        }} className="flex gap-4 items-end">
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Input type="email" name="email" placeholder="colleague@company.com" required />
                             </div>

@@ -58,7 +58,10 @@ export default async function InvitePage({
                     </div>
 
                     {user ? (
-                        <form action={acceptInviteAction}>
+                        <form action={async (formData) => {
+                            'use server'
+                            await acceptInviteAction(formData)
+                        }}>
                             <input type="hidden" name="token" value={token} />
                             <Button type="submit" className="w-full">
                                 Accept & Join

@@ -43,7 +43,10 @@ export default async function OnboardingPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form action={createOrganizationAction} className="grid gap-6">
+                    <form action={async (formData) => {
+                        'use server'
+                        await createOrganizationAction(formData)
+                    }} className="grid gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="orgName">Organization Name</Label>
                             <Input id="orgName" name="orgName" placeholder="Acme Agency, Inc." required minLength={2} />
