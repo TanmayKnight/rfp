@@ -5,9 +5,11 @@ export async function GET() {
     try {
         const { error } = await supabaseAdmin
             .from('organizations')
-            .update({ subscription_status: 'active' })
-            // Update all orgs that are NOT the placeholder (if any) or just all of them. 
-            // Ideally we filter by the user's org but for this debug fix, updating all 'trialing'/'inactive' is fine locally.
+            .update({
+                subscription_status: 'inactive',
+                stripe_customer_id: null,
+                stripe_subscription_id: null
+            })
             .neq('id', '00000000-0000-0000-0000-000000000000');
 
         if (error) throw error;
