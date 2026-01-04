@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, FileText, Brain, Upload } from 'lucide-react'
 import { Logo } from '@/components/logo'
+import { HeroActions } from '@/components/hero-actions'
 
 export default function LandingPage() {
   return (
@@ -45,18 +46,7 @@ export default function LandingPage() {
                 Securely upload your docs, and let our AI do the heavy lifting.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-start gap-4 pt-2">
-                <Link href="/signup">
-                  <Button size="lg" className="h-12 px-8 text-base bg-zinc-900 hover:bg-zinc-800 text-white shadow-xl shadow-zinc-900/20 transition-all hover:-translate-y-0.5">
-                    Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <div className="h-12 px-6 flex items-center justify-center text-zinc-500 text-sm hover:text-zinc-900 transition-colors cursor-pointer">
-                    View Demo
-                  </div>
-                </Link>
-              </div>
+              <HeroActions />
 
               <div className="flex items-center gap-6 text-xs text-zinc-400 font-medium pt-4">
                 <div className="flex items-center gap-1.5">
