@@ -1,53 +1,94 @@
 
-import Link from 'next/link'
-import { Sparkles } from 'lucide-react'
+import { signupAction } from './actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { signupAction } from './actions'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import Link from 'next/link'
+import { FileText, CheckCircle2 } from 'lucide-react'
 
 export default function SignupPage() {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                        <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900/30">
-                            <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+        <div className="min-h-screen grid lg:grid-cols-2">
+            {/* Left Column: Testimonial/Brand */}
+            <div className="hidden lg:flex flex-col bg-zinc-900 text-white p-12 justify-between relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] opacity-10 bg-cover bg-center" />
+                <div className="relative z-10">
+                    <div className="flex items-center gap-2 font-bold text-xl mb-12">
+                        <div className="rounded bg-white/10 p-1">
+                            <FileText className="h-6 w-6" />
+                        </div>
+                        Velocibid
+                    </div>
+                    <div className="space-y-6 max-w-lg">
+                        <h2 className="text-4xl font-bold tracking-tight leading-tight">
+                            "Velocibid helped us win 3x more RFPs in our first month. The AI draft quality is incredible."
+                        </h2>
+                        <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-full bg-zinc-800 border block" />
+                            <div>
+                                <div className="font-semibold">Alex Chen</div>
+                                <div className="text-zinc-400 text-sm">Head of Sales, TechFlow</div>
+                            </div>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">Start your pro trial</CardTitle>
-                    <CardDescription>
-                        Create an account to automate your RFP responses.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form action={signupAction} className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="fullName">Full Name</Label>
-                            <Input id="fullName" name="fullName" placeholder="John Doe" required />
+                </div>
+                <div className="relative z-10 flex gap-8 text-sm text-zinc-400">
+                    <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-blue-400" /> SOC2 Compliant
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-blue-400" /> 7-Day Free Trial
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Column: Sign Up Form */}
+            <div className="flex items-center justify-center bg-white p-8 lg:p-12">
+                <div className="w-full max-w-md space-y-8">
+                    <div className="text-center lg:text-left">
+                        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Create your account</h1>
+                        <p className="text-zinc-500 mt-2">Start your 7-day free trial. No commitments.</p>
+                    </div>
+
+                    <form className="space-y-5">
+                        <div className="space-y-2">
+                            <Label htmlFor="email" className="text-zinc-700">Work Email</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="name@company.com"
+                                required
+                                className="h-11 bg-zinc-50 border-zinc-200 focus:ring-blue-500 focus:border-blue-500"
+                            />
                         </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Work Email</Label>
-                            <Input id="email" name="email" type="email" placeholder="john@acme.com" required />
+                        <div className="space-y-2">
+                            <Label htmlFor="password" className="text-zinc-700">Password</Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Create a password"
+                                required
+                                className="h-11 bg-zinc-50 border-zinc-200 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <p className="text-xs text-zinc-500">Must be at least 8 characters</p>
                         </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input id="password" name="password" type="password" minLength={6} required />
-                        </div>
-                        <Button type="submit" className="w-full mt-2">Create Account</Button>
+
+                        <Button formAction={signupAction} className="w-full h-11 text-base bg-zinc-900 hover:bg-zinc-800 text-white shadow-lg shadow-zinc-900/10">
+                            Create Account
+                        </Button>
                     </form>
-                </CardContent>
-                <CardFooter className="flex justify-center">
-                    <p className="text-sm text-gray-500">
+
+                    <p className="text-center text-sm text-zinc-500">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-blue-600 hover:underline">
-                            Sign In
+                        <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-500">
+                            Log in
                         </Link>
                     </p>
-                </CardFooter>
-            </Card>
+                </div>
+            </div>
         </div>
     )
 }

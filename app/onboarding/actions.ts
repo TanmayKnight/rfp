@@ -33,6 +33,6 @@ export async function createOrganizationAction(formData: FormData) {
         redirect(`/onboarding?error=creation_failed&details=${encodeURIComponent(rpcError?.message || 'unknown')}`)
     }
 
-    // 3. Redirect to Dashboard
-    redirect('/dashboard')
+    // 3. Redirect to Subscription Page (Trial Enforced)
+    redirect('/onboarding/subscribe')
 }

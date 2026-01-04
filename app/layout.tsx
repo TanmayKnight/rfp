@@ -15,9 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Velocibid | Win RFPs 10x Faster",
   description: "AI-powered proposal automation for agencies. Secure, fast, and accurate.",
-  icons: {
-    icon: '/logo.png',
-  },
+
 };
 
 export default function RootLayout({
