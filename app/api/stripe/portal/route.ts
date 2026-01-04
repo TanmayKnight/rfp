@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         // This allows the user to Manage/Cancel their subscription on Stripe's hosted page.
         const session = await stripe.billingPortal.sessions.create({
             customer: org.stripe_customer_id,
-            return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/dashboard/settings`,
+            return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/dashboard`,
         });
 
         return NextResponse.redirect(session.url, 303);
