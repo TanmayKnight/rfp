@@ -1,5 +1,6 @@
 
 import { login } from './actions'
+import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,8 +13,8 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-gray-50/50 dark:bg-zinc-950 p-4">
             <div className="w-full max-w-md space-y-8">
                 <div className="flex flex-col items-center">
-                    <div className="rounded-xl bg-blue-600 p-3 text-white mb-4 shadow-lg shadow-blue-600/20">
-                        <FileText className="h-6 w-6" />
+                    <div className="mb-6">
+                        <Logo className="h-12 w-12" />
                     </div>
                     <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Welcome back</h2>
                     <p className="text-zinc-500 mt-2">Sign in to your Velocibid account</p>

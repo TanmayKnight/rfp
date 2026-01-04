@@ -1,5 +1,6 @@
 
 import { signupAction } from './actions'
+import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,22 +16,18 @@ export default function SignupPage() {
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] opacity-10 bg-cover bg-center" />
                 <div className="relative z-10">
                     <div className="flex items-center gap-2 font-bold text-xl mb-12">
-                        <div className="rounded bg-white/10 p-1">
-                            <FileText className="h-6 w-6" />
+                        <div className="p-1">
+                            <Logo showText={false} className="h-8 w-8" />
                         </div>
                         Velocibid
                     </div>
                     <div className="space-y-6 max-w-lg">
                         <h2 className="text-4xl font-bold tracking-tight leading-tight">
-                            "Velocibid helped us win 3x more RFPs in our first month. The AI draft quality is incredible."
+                            Win more business with AI-powered proposals.
                         </h2>
-                        <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-full bg-zinc-800 border block" />
-                            <div>
-                                <div className="font-semibold">Alex Chen</div>
-                                <div className="text-zinc-400 text-sm">Head of Sales, TechFlow</div>
-                            </div>
-                        </div>
+                        <p className="text-lg text-zinc-400">
+                            Join forward-thinking agencies using Velocibid to automate their RFP responses.
+                        </p>
                     </div>
                 </div>
                 <div className="relative z-10 flex gap-8 text-sm text-zinc-400">
@@ -46,9 +43,12 @@ export default function SignupPage() {
             {/* Right Column: Sign Up Form */}
             <div className="flex items-center justify-center bg-white p-8 lg:p-12">
                 <div className="w-full max-w-md space-y-8">
-                    <div className="text-center lg:text-left">
-                        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Create your account</h1>
-                        <p className="text-zinc-500 mt-2">Start your 7-day free trial. No commitments.</p>
+                    <div className="flex flex-col items-center">
+                        <div className="mb-6">
+                            <Logo className="h-12 w-12" />
+                        </div>
+                        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Welcome back</h2>
+                        <p className="text-zinc-500 mt-2">Sign in to your Velocibid account</p>
                     </div>
 
                     <form className="space-y-5">
