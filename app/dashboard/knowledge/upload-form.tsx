@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Upload, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
-import { uploadKnowledgeAction } from './actions'
+import { uploadDocument } from './actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -16,12 +16,12 @@ export default function UploadForm() {
         setIsUploading(true)
         setStatus(null)
 
-        const result = await uploadKnowledgeAction(formData)
+        const result = await uploadDocument(formData)
 
         if (result.error) {
             setStatus({ type: 'error', message: result.error })
         } else {
-            setStatus({ type: 'success', message: result.message || 'File uploaded successfully' })
+            setStatus({ type: 'success', message: 'File uploaded and indexed successfully.' })
             formRef.current?.reset()
         }
 
@@ -61,8 +61,8 @@ export default function UploadForm() {
                         {status && (
                             <div
                                 className={`flex items-center gap-2 rounded-md p-3 text-sm ${status.type === 'success'
-                                        ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                                        : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                                    ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
+                                    : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
                                     }`}
                             >
                                 {status.type === 'success' ? (

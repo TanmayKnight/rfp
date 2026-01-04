@@ -32,11 +32,13 @@ export default async function DashboardPage() {
                     <p className="text-zinc-500 mt-1">Here is what's happening with your proposals today.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 h-10 shadow-sm">
-                        <History className="mr-2 h-4 w-4" />
-                        Activity Log
-                    </Button>
-                    <Link href="/dashboard/new">
+                    <Link href="/dashboard/activity">
+                        <Button variant="outline" className="bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 h-10 shadow-sm">
+                            <History className="mr-2 h-4 w-4" />
+                            Activity Log
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/projects/new">
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-6 shadow-md shadow-blue-600/20 transition-all hover:scale-105">
                             <Plus className="mr-2 h-4 w-4" />
                             New Project
@@ -94,7 +96,7 @@ export default async function DashboardPage() {
                         <p className="text-zinc-500 max-w-sm mt-2 mb-8 mx-auto">
                             Get started by uploading an RFP document. Velocibid will extract questions and draft answers instantly.
                         </p>
-                        <Link href="/dashboard/new">
+                        <Link href="/dashboard/projects/new">
                             <Button size="lg" className="h-11 px-8 text-base bg-zinc-900 hover:bg-zinc-800 text-white shadow-lg shadow-zinc-900/10">
                                 Create First Project <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>

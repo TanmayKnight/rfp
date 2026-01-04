@@ -29,8 +29,10 @@ export async function generateAnswer(
     return response.choices[0].message.content
 }
 
-export async function extractQuestionsFromText(text: string) {
-    const response = await openai.chat.completions.create({
+export async function extractQuestionsFromText(text: string, apiKey?: string) {
+    const localOpenAI = apiKey ? new OpenAI({ apiKey }) : openai
+
+    const response = await localOpenAI.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
             {

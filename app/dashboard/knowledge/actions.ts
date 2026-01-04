@@ -1,105 +1,103 @@
+
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { generateEmbedding } from '@/utils/ai'
-// @ts-ignore
-const pdf = require('pdf-parse')
+import { decrypt } from '@/utils/encryption'
+import { parseFile, chunkText, generateEmbeddings } from '@/utils/rag'
 import { revalidatePath } from 'next/cache'
 
-export async function uploadKnowledgeAction(formData: FormData) {
+export async function uploadDocument(formData: FormData) {
+    const file = formData.get('file') as File
+    if (!file) return { error: 'No file provided' }
+
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-        return { error: 'Unauthorized' }
-    }
-
-    // Get Organization
-    const { data: member } = await supabase
+    // 1. Get Org & API Key
+    const { data: membership } = await supabase
         .from('organization_members')
         .select('organization_id')
         .eq('user_id', user.id)
         .single()
 
-    if (!member) {
-        return { error: 'No organization found. Please create one.' }
-    }
+    if (!membership) return { error: 'No org found' }
 
-    // 2. File Validation
-    const file = formData.get('file') as File
-    if (!file) {
-        return { error: 'No file provided' }
-    }
+    const { data: keyData } = await supabase
+        .from('api_keys')
+        .select('encrypted_key')
+        .eq('org_id', membership.organization_id)
+        .eq('provider', 'openai')
+        .eq('is_active', true)
+        .single()
 
-    if (file.type !== 'application/pdf') {
-        return { error: 'Only PDF files are supported currently' }
-    }
+    if (!keyData) return { error: 'No OpenAI key found. Please add one in Settings.' }
 
+    let apiKey = ''
     try {
-        // 3. Extract Text
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-        const data = await pdf(buffer)
-        const fullText = data.text
+        apiKey = decrypt(keyData.encrypted_key)
+    } catch (e) {
+        return { error: 'Failed to decrypt API key' }
+    }
 
-        if (!fullText || fullText.trim().length === 0) {
-            return { error: 'Could not extract text from this PDF.' }
-        }
+    // 2. Parse & Chunk
+    try {
+        const text = await parseFile(file)
+        const chunks = await chunkText(text)
 
-        // 4. Chunk Text
-        // Simple splitting by double newline (paragraphs) or fixed size
-        // For MVP: Split by paragraphs, then ensure no chunk > 1000 chars
-        const rawChunks = fullText.split(/\n\s*\n/)
-        const chunks: string[] = []
+        // 3. Embed (BYOK)
+        const vectors = await generateEmbeddings(chunks, apiKey)
 
-        for (const chunk of rawChunks) {
-            const trimmed = chunk.trim()
-            if (trimmed.length > 0) {
-                // If chunk is too big, just slice it (naive).
-                // A better approach would be smart recursive splitting, but keeping MVP simple.
-                if (trimmed.length > 2000) {
-                    // Hard slice for massive blocks
-                    const subChunks = trimmed.match(/.{1,2000}/g) || []
-                    chunks.push(...subChunks)
-                } else {
-                    chunks.push(trimmed)
-                }
-            }
-        }
+        // 4. Store
+        // Prepare rows for bulk insert
+        const rows = vectors.map(v => ({
+            organization_id: membership.organization_id,
+            source_filename: file.name,
+            content_chunk: v.content,
+            embedding: v.embedding
+        }))
 
-        // 5. Generate Embeddings & Store
-        // Limit to processing 50 chunks at a time to avoid timeouts/limits
-        // In production, use a queue.
-        const limitedChunks = chunks.slice(0, 50)
+        const { error } = await supabase
+            .from('knowledge_base')
+            .insert(rows)
 
-        // Check user credits (optional MVP step, skipping for now to reduce friction)
-
-        for (const chunkText of limitedChunks) {
-            const embedding = await generateEmbedding(chunkText)
-
-            const { error: insertError } = await supabase
-                .from('knowledge_base')
-                .insert({
-                    organization_id: member.organization_id,
-                    user_id: user.id, // Optional now, but keeping for audit
-                    content_chunk: chunkText,
-                    embedding: embedding,
-                    source_filename: file.name,
-                })
-
-            if (insertError) {
-                console.error('Insert error:', insertError)
-                // continue...
-            }
+        if (error) {
+            console.error('Insert error', error)
+            return { error: 'Failed to save to database' }
         }
 
         revalidatePath('/dashboard/knowledge')
-        return { success: true, message: `Processed ${limitedChunks.length} chunks.` }
+        return { success: true }
 
-    } catch (error) {
-        console.error('Upload processing error:', error)
-        return { error: 'Failed to process file' }
+    } catch (e) {
+        console.error('Processing error', e)
+        return { error: 'Failed to process document. ' + (e as Error).message }
     }
+}
+
+export async function deleteDocument(filename: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
+
+    // Get Org
+    const { data: membership } = await supabase
+        .from('organization_members')
+        .select('organization_id')
+        .eq('user_id', user.id)
+        .single()
+
+    if (!membership) return { error: 'No org found' }
+
+    // Delete all chunks with this filename for this org
+    const { error } = await supabase
+        .from('knowledge_base')
+        .delete()
+        .eq('organization_id', membership.organization_id)
+        .eq('source_filename', filename)
+
+    if (error) return { error: 'Failed to delete' }
+
+    revalidatePath('/dashboard/knowledge')
+    return { success: true }
 }

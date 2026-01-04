@@ -1,9 +1,9 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-// @ts-ignore
-const pdf = require('pdf-parse')
 import { extractQuestionsFromText } from '@/utils/ai'
+import { parseFile } from '@/utils/rag'
+import { decrypt } from '@/utils/encryption'
 import { redirect } from 'next/navigation'
 
 export async function createProjectAction(formData: FormData) {
@@ -53,17 +53,29 @@ export async function createProjectAction(formData: FormData) {
 
     try {
         // 4. Extract Text
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-        const data = await pdf(buffer)
-        const fullText = data.text
+        // 4. Extract Text
+        const fullText = await parseFile(file)
 
         if (!fullText || fullText.trim().length === 0) {
             throw new Error('Could not extract text from PDF')
         }
 
         // 5. Extract Questions (AI)
-        const questions = await extractQuestionsFromText(fullText)
+        // Fetch BYOK Key
+        const { data: keyData } = await supabase
+            .from('api_keys')
+            .select('encrypted_key')
+            .eq('org_id', member.organization_id)
+            .eq('provider', 'openai')
+            .eq('is_active', true)
+            .single()
+
+        let apiKey: string | undefined = undefined
+        if (keyData) {
+            apiKey = decrypt(keyData.encrypted_key)
+        }
+
+        const questions = await extractQuestionsFromText(fullText, apiKey)
 
         if (questions.length === 0) {
             // Fallback or warning? For now just proceed potentially empty
