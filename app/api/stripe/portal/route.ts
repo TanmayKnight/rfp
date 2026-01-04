@@ -40,6 +40,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.redirect(session.url, 303);
     } catch (err: any) {
         console.error('Stripe Portal Error:', err);
-        return new NextResponse('Internal Server Error', { status: 500 });
+        return new NextResponse(JSON.stringify({ error: err.message }), { status: 500 });
     }
 }
