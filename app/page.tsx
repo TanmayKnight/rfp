@@ -50,7 +50,7 @@ export default function LandingPage() {
 
               <div className="flex items-center gap-6 text-xs text-zinc-400 font-medium pt-4">
                 <div className="flex items-center gap-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div> SOC2 Compliant
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div> Enterprise Grade Security
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-zinc-300"></div> Cancel Anytime
